@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+  <head>
+    <meta charset="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notyf/3.10.0/notyf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/notyf/3.10.0/notyf.min.css"
+    />
+    <title>Document</title>
+  </head>
+  <body>
+    <nav class="navbar bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand">
+          <img
+            src="https://img.icons8.com/?size=100&id=7847&format=png&color=000000"
+            alt="Logo"
+            width="30"
+            height="25"
+            class="d-inline-block align-text-top"
+          />
+          <%= login %>
+        </a>
+        <p>
+          <a
+            class="link-opacity-50 link-offset-1 link-underline-light link-light link-underline-opacity-25"
+            href="/index1.html"
+            >Sair</a
+          >
+        </p>
+      </div>
+    </nav>
+
+    <ol class="list-group list-group-numbered" id="itemList">
+      <li
+        class="list-group-item d-flex justify-content-between align-items-start"
+      >
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Bebidas</div>
+          Coca-cola
+        </div>
+        <span class="badge text-bg-primary rounded-pill">30</span>
+        <button class="btn btn-sm btn-danger delete-button ms-2">
+          Excluir
+        </button>
+      </li>
+      <li
+        class="list-group-item d-flex justify-content-between align-items-start"
+      >
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Bebidas</div>
+          Ambev
+        </div>
+        <span class="badge text-bg-primary rounded-pill">20</span>
+        <button class="btn btn-sm btn-danger delete-button ms-2">
+          Excluir
+        </button>
+      </li>
+      <li
+        class="list-group-item d-flex justify-content-between align-items-start"
+      >
+        <div class="ms-2 me-auto">
+          <div class="fw-bold">Bebidas</div>
+          Diversos
+        </div>
+        <span class="badge text-bg-primary rounded-pill">10</span>
+        <button class="btn btn-sm btn-danger delete-button ms-2">
+          Excluir
+        </button>
+      </li>
+    </ol>
+
+    <div class="container mt-3">
+      <button
+        class="btn btn-primary"
+        id="addButton"
+        data-bs-toggle="modal"
+        data-bs-target="#addItemModal"
+      >
+        Adicionar Item
+      </button>
+    </div>
+
+    <!-- Modal para adicionar/editar item -->
+    <!-- Modal para adicionar/editar item -->
+<div
+  class="modal fade"
+  id="addItemModal"
+  tabindex="-1"
+  aria-labelledby="addItemModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addItemModalLabel">
+          Adicionar Novo Item
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="addItemForm">
+          <div class="mb-3">
+            <label for="categoryInput" class="form-label">Nome do Produto</label>
+            <input
+              type="text"
+              class="form-control"
+              id="categoryInput"
+              minlength="5"
+              maxlength="20"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="itemInput" class="form-label">Descrição do Produto</label>
+            <input
+              type="text"
+              class="form-control"
+              id="itemInput"
+              minlength="5"
+              maxlength="20"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="codeInput" class="form-label">Código do Produto</label>
+            <input
+              type="text"
+              class="form-control"
+              id="codeInput"
+              minlength="1"
+              maxlength="10"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="priceInput" class="form-label">Preço do Produto</label>
+            <input
+              type="text"
+              class="form-control"
+              id="priceInput"
+              minlength="1"
+              maxlength="10"
+              required
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-bs-dismiss="modal"
+        >
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" id="saveButton">
+          Salvar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+    <script>
+  $(document).ready(function () {
+    $("#codeInput").mask("0000000000");
+    $("#priceInput").mask('000.000.000.000,00', {reverse: true});
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    let editMode = false;
+    let editItem = null;
+
+    loadItems();
+
+    document
+      .getElementById("saveButton")
+      .addEventListener("click", function () {
+        const category = document.getElementById("categoryInput").value;
+        const item = document.getElementById("itemInput").value;
+        const code = document.getElementById("codeInput").value;
+        const price = document.getElementById("priceInput").value;
+
+        if (category && item && code && price) {
+          if (editMode) {
+            updateItem(editItem, category, item, code, price);
+          } else {
+            addItem(category, item, code, price);
+          }
+
+          const addItemModal = bootstrap.Modal.getInstance(
+            document.getElementById("addItemModal")
+          );
+          addItemModal.hide();
+          document.getElementById("addItemForm").reset();
+        }
+      });
+
+    document.querySelectorAll(".edit-button").forEach((button) => {
+      button.addEventListener("click", function () {
+        const listItem = this.closest("li");
+        const category = listItem.querySelector(".fw-bold").textContent;
+        const item = listItem.querySelector(".ms-2.me-auto div:nth-child(2)").textContent;
+        const code = listItem.querySelector(".badge").textContent;
+        const price = listItem.querySelector(".ms-2.me-auto div:nth-child(3)").textContent;
+        editMode = true;
+        editItem = listItem;
+        loadEditData(category, item, code, price);
+      });
+    });
+
+    document.querySelectorAll(".delete-button").forEach((button) => {
+      button.addEventListener("click", function () {
+        const listItem = this.closest("li");
+        deleteItem(listItem);
+        listItem.remove();
+      });
+    });
+
+    function addItem(category, item, code, price) {
+      const itemList = document.getElementById("itemList");
+      if (!itemList) {
+        console.error('Elemento com ID "itemList" não encontrado.');
+        return;
+      }
+
+      const newItem = createListItem(category, item, code, price);
+      itemList.appendChild(newItem);
+      saveItems();
+    }
+
+    function createListItem(category, item, code, price) {
+      const newItem = document.createElement("li");
+      newItem.className = "list-group-item d-flex justify-content-between align-items-start";
+
+      const itemContent = document.createElement("div");
+      itemContent.className = "ms-2 me-auto";
+
+      const itemCategory = document.createElement("div");
+      itemCategory.className = "fw-bold";
+      itemCategory.textContent = category;
+
+      const itemName = document.createElement("div");
+      itemName.textContent = item;
+
+      const itemCode = document.createElement("div");
+      itemCode.textContent = code;
+
+      itemContent.appendChild(itemCategory);
+      itemContent.appendChild(itemName);
+      itemContent.appendChild(itemCode);
+
+      const itemBadge = document.createElement("span");
+      itemBadge.className = "badge text-bg-primary rounded-pill";
+      itemBadge.textContent = price;
+
+      const editButton = document.createElement("button");
+      editButton.className = "btn btn-sm btn-warning edit-button ms-2";
+      editButton.textContent = "Editar";
+      editButton.addEventListener("click", function () {
+        const listItem = this.closest("li");
+        const category = listItem.querySelector(".fw-bold").textContent;
+        const item = listItem.querySelector(".ms-2.me-auto div:nth-child(2)").textContent;
+        const code = listItem.querySelector(".ms-2.me-auto div:nth-child(3)").textContent;
+        const price = listItem.querySelector(".badge").textContent;
+        editMode = true;
+        editItem = listItem;
+        loadEditData(category, item, code, price);
+      });
+
+      const deleteButton = document.createElement("button");
+      deleteButton.className = "btn btn-sm btn-danger delete-button ms-2";
+      deleteButton.textContent = "Excluir";
+      deleteButton.addEventListener("click", function () {
+        const listItem = this.closest("li");
+        deleteItem(listItem);
+        listItem.remove();
+      });
+
+      newItem.appendChild(itemContent);
+      newItem.appendChild(itemBadge);
+      newItem.appendChild(editButton);
+      newItem.appendChild(deleteButton);
+
+      return newItem;
+    }
+
+    function loadEditData(category, item, code, price) {
+      document.getElementById("categoryInput").value = category;
+      document.getElementById("itemInput").value = item;
+      document.getElementById("codeInput").value = code;
+      document.getElementById("priceInput").value = price;
+      const addItemModalLabel = document.getElementById("addItemModalLabel");
+      addItemModalLabel.textContent = "Editar Item";
+      const addItemModal = new bootstrap.Modal(
+        document.getElementById("addItemModal")
+      );
+      addItemModal.show();
+    }
+
+    function updateItem(itemElement, category, item, code, price) {
+      const itemContent = itemElement.querySelector(".ms-2.me-auto");
+      itemContent.querySelector(".fw-bold").textContent = category;
+      itemContent.querySelector("div:nth-child(2)").textContent = item;
+      itemContent.querySelector("div:nth-child(3)").textContent = code;
+      itemElement.querySelector(".badge").textContent = price;
+      saveItems();
+      editMode = false;
+      editItem = null;
+      document.getElementById("addItemModalLabel").textContent =
+        "Adicionar Novo Item";
+    }
+
+    function loadItems() {
+      const items = JSON.parse(localStorage.getItem("items")) || [];
+      const itemList = document.getElementById("itemList");
+      itemList.innerHTML = "";
+      items.forEach((item) => {
+        const listItem = createListItem(
+          item.category,
+          item.name,
+          item.code,
+          item.price
+        );
+        itemList.appendChild(listItem);
+      });
+    }
+
+    function saveItems() {
+      const items = [];
+      document.querySelectorAll("#itemList li").forEach((listItem) => {
+        const category = listItem.querySelector(".fw-bold").textContent;
+        const item = listItem.querySelector(".ms-2.me-auto div:nth-child(2)").textContent;
+        const code = listItem.querySelector(".ms-2.me-auto div:nth-child(3)").textContent;
+        const price = listItem.querySelector(".badge").textContent;
+        items.push({ category, name: item, code, price });
+      });
+      localStorage.setItem("items", JSON.stringify(items));
+    }
+
+    function deleteItem(listItem) {
+      listItem.remove();
+      saveItems();
+    }
+
+    document
+      .getElementById("addItemModal")
+      .addEventListener("show.bs.modal", function () {
+        if (!editMode) {
+          document.getElementById("codeInput").value = generateProductCode();
+        }
+      });
+
+    function generateProductCode() {
+      const length = 10; // Defina o comprimento do código
+      let code = '0'; // Começa com '0'
+
+      for (let i = 1; i < length; i++) {
+        code += Math.floor(Math.random() * 10); // Adiciona um dígito aleatório
+      }
+
+      return code;
+    }
+  });
+</script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+  </body>
+</html>
