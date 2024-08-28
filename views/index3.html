@@ -325,31 +325,38 @@
     }
 
     function loadItems() {
-      const items = JSON.parse(localStorage.getItem("items")) || [];
-      const itemList = document.getElementById("itemList");
-      itemList.innerHTML = "";
-      items.forEach((item) => {
-        const listItem = createListItem(
-          item.category,
-          item.name,
-          item.code,
-          item.price
-        );
-        itemList.appendChild(listItem);
-      });
-    }
+  const userLogin = '<%= login %>'; // Utilize a variável com o login do usuário
+  const items = JSON.parse(localStorage.getItem(`items_${userLogin}`)) || [];
+  const itemList = document.getElementById("itemList");
+  itemList.innerHTML = "";
+  items.forEach((item) => {
+    const listItem = createListItem(item.category, item.name, item.code, item.price);
+    itemList.appendChild(listItem);
+  });
+}
+
+function logout() {
+  localStorage.clear();
+  // Redirecionar para a página de login ou fazer qualquer outra ação necessária
+  window.location.href = '/index1.html';
+}
+
 
     function saveItems() {
-      const items = [];
-      document.querySelectorAll("#itemList li").forEach((listItem) => {
-        const category = listItem.querySelector(".fw-bold").textContent;
-        const item = listItem.querySelector(".ms-2.me-auto div:nth-child(2)").textContent;
-        const code = listItem.querySelector(".ms-2.me-auto div:nth-child(3)").textContent;
-        const price = listItem.querySelector(".badge").textContent;
-        items.push({ category, name: item, code, price });
-      });
-      localStorage.setItem("items", JSON.stringify(items));
-    }
+  const items = [];
+  document.querySelectorAll("#itemList li").forEach((listItem) => {
+    const category = listItem.querySelector(".fw-bold").textContent;
+    const item = listItem.querySelector(".ms-2.me-auto div:nth-child(2)").textContent;
+    const code = listItem.querySelector(".ms-2.me-auto div:nth-child(3)").textContent;
+    const price = listItem.querySelector(".badge").textContent;
+    items.push({ category, name: item, code, price });
+  });
+  
+  // Salvar os itens com base no login do usuário
+  const userLogin = '<%= login %>'; // Utilize a variável com o login do usuário
+  localStorage.setItem(`items_${userLogin}`, JSON.stringify(items));
+}
+
 
     function deleteItem(listItem) {
       listItem.remove();

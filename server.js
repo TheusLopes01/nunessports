@@ -3,6 +3,7 @@ const session = require("express-session")
 const bodyParser = require("body-parser")
 const path = require("path")
 
+const PORT = 3000;
 const app = express()
 
 // Dados de usuários (em um banco de dados real, você armazenaria isso de forma segura)
@@ -67,4 +68,6 @@ app.post("/register", (req, res) => {
   }
 })
 
-module.exports = app;  // Export the app instead of listening
+app.listen(PORT, () => {
+  console.log(`Servidor rodando em http://localhost:${PORT}`);
+});
