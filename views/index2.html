@@ -33,7 +33,7 @@
                 id="inputUser"
                 name="usuario"
                 minlength="5"
-                maxlength="15"
+                maxlength="30"
                 placeholder="Ex: AndréSilva"
                 required
               />
@@ -72,7 +72,7 @@
     </div>
     <script>
       $(document).ready(function () {
-        $("#inputUser").mask("AAAAAAAAAAAAAAA", {
+        $("#inputUser").mask("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", {
           translation: {
             A: { pattern: /[A-Za-z]/ },
           },
